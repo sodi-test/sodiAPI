@@ -180,7 +180,7 @@ def save_conversation_to_db(thread_id, user_message, assistant_response):
         now = datetime.datetime.now()
         conversation = conversations.find_one({'thread_id': thread_id})
         if conversation:
-            conversations.update_one(
+            conversations.update_one( 
                 {'thread_id': thread_id},
                 {
                     '$push': {
@@ -226,4 +226,5 @@ def save_error_to_db(thread_id, user_message, error_message):
         app.logger.error(f"Error al insertar error en MongoDB Atlas: {e}")
         return False
 
-app = app
+if __name__ == '__main__':
+    app.run()
