@@ -41,6 +41,18 @@ except Exception as e:
 
 thread_locks = {}
 
+@app.route('/')
+def index():
+    return jsonify({
+        "message": "API is running",
+        "endpoints": {
+            "test": "/test",
+            "start_conversation": "/start_conversation",
+            "send_message": "/send_message",
+            "get_conversation": "/get_conversation"
+        }
+    })
+
 @app.route('/start_conversation', methods=['POST'])
 def start_conversation():
     try:
