@@ -182,6 +182,9 @@ def handle_exception(e):
 def test():
     return jsonify({"message": "Test successful"}), 200
 
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204  # Retorna una respuesta vacía con código 204 (No Content)
 
 def save_conversation_to_db(thread_id, user_message, assistant_response):
     if mongo_client is None:
