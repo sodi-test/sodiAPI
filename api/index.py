@@ -21,23 +21,34 @@ openai_client = OpenAI(
 ASSISTANT_ID = os.getenv('ASSISTANT_ID')
 
 # Conexión a MongoDB Atlas
-app.logger.info(f"Intentando conectar a MongoDB Atlas con URI: {os.getenv('MONGO_URI')}")
-try:
-    mongo_client = MongoClient(
-        os.getenv('MONGO_URI'),
-        serverSelectionTimeoutMS=5000,
-        connectTimeoutMS=5000,
-        socketTimeoutMS=5000
-    )
-    # Intenta una operación simple para verificar la conexión
-    mongo_client.admin.command('ping')
-    db = mongo_client['ChatbotBD']
-    conversations = db['conversations']
-    errors = db['errors']
-    app.logger.info("Conexión exitosa a MongoDB Atlas")
-except Exception as e:
-    app.logger.error(f"Error al conectar a MongoDB Atlas: {str(e)}")
+mongo_uri = os.getenv('MONGO_URI')
+app.logger.info("Variables de entorno disponibles:")
+app.logger.info(str(os.environ.keys()))
+app.logger.info(f"MONGO_URI presente: {'Sí' if mongo_uri else 'No'}")
+
+if not mongo_uri:
+    app.logger.error("❌ MONGO_URI no encontrada en variables de entorno")
     mongo_client = None
+else:
+    try:
+        app.logger.info(f"Intentando conectar a MongoDB Atlas...")
+        mongo_client = MongoClient(
+            mongo_uri,
+            serverSelectionTimeoutMS=5000,
+            connectTimeoutMS=5000,
+            socketTimeoutMS=5000
+        )
+        # Intenta una operación simple para verificar la conexión
+        mongo_client.admin.command('ping')
+        app.logger.info("✅ Ping exitoso")
+        db = mongo_client['ChatbotBD']
+        conversations = db['conversations']
+        errors = db['errors']
+        app.logger.info("✅ Conexión exitosa a MongoDB Atlas")
+    except Exception as e:
+        app.logger.error(f"❌ Error detallado: {str(e)}")
+        app.logger.error(f"Tipo de error: {type(e)}")
+        mongo_client = None
 
 thread_locks = {}
 
