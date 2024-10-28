@@ -171,9 +171,6 @@ def handle_exception(e):
 def test():
     return jsonify({"message": "Test successful"}), 200
 
-@app.route('/')
-def index():
-    return send_from_directory(app.static_folder, 'index.html')
 
 def save_conversation_to_db(thread_id, user_message, assistant_response):
     if mongo_client is None:
